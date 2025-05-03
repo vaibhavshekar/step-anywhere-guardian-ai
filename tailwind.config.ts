@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,28 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Custom colors
+				brand: {
+					purple: {
+						light: '#9b87f5',
+						DEFAULT: '#7E69AB',
+						dark: '#6E59A5',
+					},
+					orange: {
+						light: '#FEC6A1',
+						DEFAULT: '#F97316',
+					},
+					blue: {
+						light: '#D3E4FD',
+						DEFAULT: '#0EA5E9',
+					},
+				},
+				safety: {
+					safe: '#22c55e',     // green-500
+					moderate: '#eab308', // yellow-500
+					unsafe: '#ef4444',   // red-500
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +106,20 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 3s ease-in-out infinite',
+			},
+			backgroundImage: {
+				'hero-pattern': "url('/src/assets/hero-pattern.png')",
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 			}
 		}
 	},
