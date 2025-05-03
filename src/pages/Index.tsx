@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -9,111 +8,88 @@ import BadgeDisplay from '@/components/BadgeDisplay';
 import AIAssistant from '@/components/AIAssistant';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  ShieldCheck, 
-  MapPin, 
-  Ticket, 
-  Map, 
-  Bell, 
-  BadgeCheck,
-  Globe, 
-  Sparkles, 
-  Users
-} from 'lucide-react';
+import { ShieldCheck, MapPin, Ticket, Map, Bell, BadgeCheck, Globe, Sparkles, Users } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 // Sample data
-const featuredDestinations = [
-  {
-    id: '1',
-    name: 'Paris',
-    country: 'France',
-    image: 'https://images.unsplash.com/photo-1499856871958-5b9357976b82?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-    safetyLevel: 'moderate' as const,
-    safetyReason: 'Exercise caution due to occasional protests and pickpocketing in tourist areas.',
-    flightPrice: 499,
-    hotelPrice: 120,
-    popularityScore: 9.2,
-    currentEvents: ['Fashion Week', 'Museum Exhibition']
-  },
-  {
-    id: '2',
-    name: 'Tokyo',
-    country: 'Japan',
-    image: 'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1036&q=80',
-    safetyLevel: 'safe' as const,
-    safetyReason: 'Very low crime rate and excellent healthcare facilities.',
-    flightPrice: 899,
-    hotelPrice: 150,
-    popularityScore: 9.5,
-    currentEvents: ['Cherry Blossom Festival', 'Tech Expo']
-  },
-  {
-    id: '3',
-    name: 'Cairo',
-    country: 'Egypt',
-    image: 'https://images.unsplash.com/photo-1568322445389-f9e7bd640ff3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80',
-    safetyLevel: 'moderate' as const,
-    safetyReason: 'Avoid certain areas and follow local guidance. Tourist areas have increased security.',
-    flightPrice: 599,
-    hotelPrice: 75,
-    popularityScore: 7.8,
-    currentEvents: ['Archaeological Exhibition']
-  },
-  {
-    id: '4',
-    name: 'Bali',
-    country: 'Indonesia',
-    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1038&q=80',
-    safetyLevel: 'safe' as const,
-    safetyReason: 'Generally safe with friendly locals. Some areas have natural hazards like rip tides.',
-    flightPrice: 799,
-    hotelPrice: 90,
-    popularityScore: 8.9,
-    currentEvents: ['Cultural Festival', 'Surf Competition']
-  }
-];
-
-const sampleBadges = [
-  {
-    id: '1',
-    type: 'visit' as const,
-    title: 'Paris Explorer',
-    description: 'Visited Paris, France',
-    icon: 'location' as const,
-    earned: true,
-    date: 'May 2024'
-  },
-  {
-    id: '2',
-    type: 'comment' as const,
-    title: 'Helpful Guide',
-    description: 'Left 5 helpful comments',
-    icon: 'comment' as const,
-    earned: true,
-    date: 'April 2024'
-  },
-  {
-    id: '3',
-    type: 'visit' as const,
-    title: 'Tokyo Traveler',
-    description: 'Visited Tokyo, Japan',
-    icon: 'location' as const,
-    earned: false
-  },
-  {
-    id: '4',
-    type: 'comment' as const,
-    title: 'Safety Expert',
-    description: 'Left 10 safety tips',
-    icon: 'comment' as const,
-    earned: false
-  }
-];
-
+const featuredDestinations = [{
+  id: '1',
+  name: 'Paris',
+  country: 'France',
+  image: 'https://images.unsplash.com/photo-1499856871958-5b9357976b82?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+  safetyLevel: 'moderate' as const,
+  safetyReason: 'Exercise caution due to occasional protests and pickpocketing in tourist areas.',
+  flightPrice: 499,
+  hotelPrice: 120,
+  popularityScore: 9.2,
+  currentEvents: ['Fashion Week', 'Museum Exhibition']
+}, {
+  id: '2',
+  name: 'Tokyo',
+  country: 'Japan',
+  image: 'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1036&q=80',
+  safetyLevel: 'safe' as const,
+  safetyReason: 'Very low crime rate and excellent healthcare facilities.',
+  flightPrice: 899,
+  hotelPrice: 150,
+  popularityScore: 9.5,
+  currentEvents: ['Cherry Blossom Festival', 'Tech Expo']
+}, {
+  id: '3',
+  name: 'Cairo',
+  country: 'Egypt',
+  image: 'https://images.unsplash.com/photo-1568322445389-f9e7bd640ff3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80',
+  safetyLevel: 'moderate' as const,
+  safetyReason: 'Avoid certain areas and follow local guidance. Tourist areas have increased security.',
+  flightPrice: 599,
+  hotelPrice: 75,
+  popularityScore: 7.8,
+  currentEvents: ['Archaeological Exhibition']
+}, {
+  id: '4',
+  name: 'Bali',
+  country: 'Indonesia',
+  image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1038&q=80',
+  safetyLevel: 'safe' as const,
+  safetyReason: 'Generally safe with friendly locals. Some areas have natural hazards like rip tides.',
+  flightPrice: 799,
+  hotelPrice: 90,
+  popularityScore: 8.9,
+  currentEvents: ['Cultural Festival', 'Surf Competition']
+}];
+const sampleBadges = [{
+  id: '1',
+  type: 'visit' as const,
+  title: 'Paris Explorer',
+  description: 'Visited Paris, France',
+  icon: 'location' as const,
+  earned: true,
+  date: 'May 2024'
+}, {
+  id: '2',
+  type: 'comment' as const,
+  title: 'Helpful Guide',
+  description: 'Left 5 helpful comments',
+  icon: 'comment' as const,
+  earned: true,
+  date: 'April 2024'
+}, {
+  id: '3',
+  type: 'visit' as const,
+  title: 'Tokyo Traveler',
+  description: 'Visited Tokyo, Japan',
+  icon: 'location' as const,
+  earned: false
+}, {
+  id: '4',
+  type: 'comment' as const,
+  title: 'Safety Expert',
+  description: 'Left 10 safety tips',
+  icon: 'comment' as const,
+  earned: false
+}];
 const Index = () => {
-  return (
-    <div className="flex flex-col min-h-screen">
+  return <div className="flex flex-col min-h-screen">
       <Header />
       
       {/* Hero Section */}
@@ -131,10 +107,7 @@ const Index = () => {
             </span>
           </h1>
           
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-12">
-            Step Anywhere combines travel bookings with real-time safety information, 
-            current events, and personalized recommendations for your worry-free adventure.
-          </p>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-12">Step Anywhere combines travel bookings with real-time safety information, current events, and personalized recommendations for your worry-free adventure.</p>
           
           <SearchBar />
         </div>
@@ -211,7 +184,7 @@ const Index = () => {
       </div>
       
       {/* Featured Destinations */}
-      <div className="py-16 px-4 bg-gray-50">
+      <div className="py-16 px-4 bg-amber-100">
         <div className="container max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold">Featured Destinations</h2>
@@ -222,9 +195,7 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredDestinations.map(destination => (
-              <DestinationCard key={destination.id} destination={destination} />
-            ))}
+            {featuredDestinations.map(destination => <DestinationCard key={destination.id} destination={destination} />)}
           </div>
           
           <div className="mt-8 text-center md:hidden">
@@ -292,8 +263,6 @@ const Index = () => {
       
       <Footer />
       <AIAssistant />
-    </div>
-  );
+    </div>;
 };
-
 export default Index;

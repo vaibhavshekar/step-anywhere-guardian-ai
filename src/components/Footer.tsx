@@ -1,11 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Facebook, Twitter, Instagram, Mail } from 'lucide-react';
-
 const Footer = () => {
-  return (
-    <footer className="bg-gray-50 pt-12 pb-8">
+  return <footer className="pt-12 pb-8 bg-gray-900">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
@@ -82,11 +79,7 @@ const Footer = () => {
               Get safety alerts and travel tips directly to your inbox.
             </p>
             <div className="flex">
-              <input 
-                type="email" 
-                placeholder="Your email" 
-                className="px-4 py-2 text-sm rounded-l border border-gray-300 focus:outline-none focus:border-brand-purple flex-grow"
-              />
+              <input type="email" placeholder="Your email" className="px-4 py-2 text-sm rounded-l border border-gray-300 focus:outline-none focus:border-brand-purple flex-grow" />
               <button className="bg-brand-purple text-white px-4 py-2 text-sm rounded-r hover:bg-brand-purple-dark">
                 Subscribe
               </button>
@@ -100,8 +93,6 @@ const Footer = () => {
           </p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
