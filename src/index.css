@@ -34,6 +34,16 @@
     --ring: 252 82% 74%;
 
     --radius: 0.5rem;
+
+    /* Sidebar related variables */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 10% 3.9%;
+    --sidebar-primary: 252 82% 74%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 240 5.9% 90%;
+    --sidebar-ring: 252 82% 74%;
   }
 
   .dark {
@@ -64,6 +74,16 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 252 82% 74%;
+
+    /* Sidebar related variables for dark mode */
+    --sidebar-background: 240 10% 3.9%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 252 82% 74%;
+    --sidebar-primary-foreground: 240 5.9% 10%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 252 82% 74%;
   }
 }
 
@@ -77,7 +97,9 @@
   }
 }
 
+/* Keep existing CSS for specific components */
 .hero-gradient {
+  @apply dark:bg-gradient-to-br dark:from-brand-purple/10 dark:to-brand-blue-light/10;
   background: linear-gradient(to bottom right, rgba(155, 135, 245, 0.15), rgba(211, 228, 253, 0.2));
 }
 
