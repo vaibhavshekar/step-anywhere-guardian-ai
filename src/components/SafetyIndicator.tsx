@@ -24,21 +24,21 @@ const SafetyIndicator = ({ level, reason, className }: SafetyIndicatorProps) => 
       icon: ShieldCheck,
       text: "Safe to Travel",
       color: "text-safety-safe",
-      bgColor: "bg-safety-safe/10", 
+      bgColor: "bg-safety-safe/10 dark:bg-safety-safe/20", 
       borderColor: "border-safety-safe/30"
     },
     moderate: {
       icon: Shield,
       text: "Exercise Caution",
       color: "text-safety-moderate",
-      bgColor: "bg-safety-moderate/10",
+      bgColor: "bg-safety-moderate/10 dark:bg-safety-moderate/20",
       borderColor: "border-safety-moderate/30"
     },
     unsafe: {
       icon: ShieldAlert,
       text: "Not Recommended",
       color: "text-safety-unsafe",
-      bgColor: "bg-safety-unsafe/10",
+      bgColor: "bg-safety-unsafe/10 dark:bg-safety-unsafe/20",
       borderColor: "border-safety-unsafe/30"
     },
   };
@@ -57,7 +57,7 @@ const SafetyIndicator = ({ level, reason, className }: SafetyIndicatorProps) => 
             <Tooltip>
               <TooltipTrigger asChild>
                 <button className="ml-1 inline">
-                  <Info className="h-3.5 w-3.5 text-gray-400" />
+                  <Info className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
