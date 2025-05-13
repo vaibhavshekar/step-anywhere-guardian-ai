@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { User, Search, MapPin, ShieldCheck } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <ShieldCheck className="h-8 w-8 text-brand-purple" />
@@ -18,24 +19,26 @@ const Header = () => {
         </Link>
         
         <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/" className="text-sm font-medium text-gray-700 hover:text-brand-purple transition-colors">
+          <Link to="/" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
             Home
           </Link>
-          <Link to="/destinations" className="text-sm font-medium text-gray-700 hover:text-brand-purple transition-colors">
+          <Link to="/destinations" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
             Destinations
           </Link>
-          <Link to="/flights" className="text-sm font-medium text-gray-700 hover:text-brand-purple transition-colors">
+          <Link to="/flights" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
             Flights
           </Link>
-          <Link to="/hotels" className="text-sm font-medium text-gray-700 hover:text-brand-purple transition-colors">
+          <Link to="/hotels" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
             Hotels
           </Link>
-          <Link to="/safety-guide" className="text-sm font-medium text-gray-700 hover:text-brand-purple transition-colors">
+          <Link to="/safety-guide" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
             Safety Guide
           </Link>
         </nav>
         
         <div className="flex items-center space-x-4">
+          <ThemeToggle />
+          
           <Button variant="ghost" size="icon" className="hidden md:flex">
             <Search className="h-5 w-5" />
           </Button>
@@ -94,21 +97,21 @@ const Header = () => {
       
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden border-t border-gray-100">
+        <div className="md:hidden border-t border-border">
           <div className="container py-4 space-y-4">
-            <Link to="/" className="block text-sm font-medium text-gray-700">
+            <Link to="/" className="block text-sm font-medium text-foreground">
               Home
             </Link>
-            <Link to="/destinations" className="block text-sm font-medium text-gray-700">
+            <Link to="/destinations" className="block text-sm font-medium text-foreground">
               Destinations
             </Link>
-            <Link to="/flights" className="block text-sm font-medium text-gray-700">
+            <Link to="/flights" className="block text-sm font-medium text-foreground">
               Flights
             </Link>
-            <Link to="/hotels" className="block text-sm font-medium text-gray-700">
+            <Link to="/hotels" className="block text-sm font-medium text-foreground">
               Hotels
             </Link>
-            <Link to="/safety-guide" className="block text-sm font-medium text-gray-700">
+            <Link to="/safety-guide" className="block text-sm font-medium text-foreground">
               Safety Guide
             </Link>
             <div className="pt-4 flex flex-col space-y-2">
