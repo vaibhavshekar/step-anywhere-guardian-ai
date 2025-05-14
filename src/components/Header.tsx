@@ -1,15 +1,11 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { User, Search, MapPin, ShieldCheck } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
-
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  return (
-    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md border-b border-border">
+  return <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <ShieldCheck className="h-8 w-8 text-brand-purple" />
@@ -25,12 +21,8 @@ const Header = () => {
           <Link to="/destinations" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
             Destinations
           </Link>
-          <Link to="/flights" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
-            Flights
-          </Link>
-          <Link to="/hotels" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
-            Hotels
-          </Link>
+          
+          
           <Link to="/safety-guide" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
             Safety Guide
           </Link>
@@ -54,40 +46,13 @@ const Header = () => {
           </Button>
           
           {/* Mobile Menu Button */}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={isMenuOpen ? "hidden" : "block"}
-            >
+          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isMenuOpen ? "hidden" : "block"}>
               <line x1="4" x2="20" y1="12" y2="12" />
               <line x1="4" x2="20" y1="6" y2="6" />
               <line x1="4" x2="20" y1="18" y2="18" />
             </svg>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={isMenuOpen ? "block" : "hidden"}
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isMenuOpen ? "block" : "hidden"}>
               <path d="M18 6 6 18" />
               <path d="m6 6 12 12" />
             </svg>
@@ -96,8 +61,7 @@ const Header = () => {
       </div>
       
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t border-border">
+      {isMenuOpen && <div className="md:hidden border-t border-border">
           <div className="container py-4 space-y-4">
             <Link to="/" className="block text-sm font-medium text-foreground">
               Home
@@ -125,10 +89,7 @@ const Header = () => {
               </Button>
             </div>
           </div>
-        </div>
-      )}
-    </header>
-  );
+        </div>}
+    </header>;
 };
-
 export default Header;
