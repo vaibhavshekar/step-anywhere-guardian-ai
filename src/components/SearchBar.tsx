@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Calendar, Users, Loader2 } from 'lucide-react';
@@ -7,6 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useCSVData } from '@/hooks/useCSVData';
+import { 
+  searchHotels, 
+  searchFlights, 
+  generateMockPrice, 
+  formatTime, 
+  formatDuration,
+  HotelData,
+  FlightData 
+} from '@/utils/csvDataUtils';
 
 interface SearchResult {
   provider: string;
@@ -19,7 +28,10 @@ interface SearchResult {
   hotel?: {
     name: string;
     rating: number;
+    facilities?: string;
+    website?: string;
   };
+  rawData?: HotelData | FlightData;
 }
 
 // Mock data for flight search results
@@ -105,6 +117,7 @@ const mockHotelResults = (location: string): SearchResult[] => [
 const SearchBar = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { hotelsData, flightsData, loading: dataLoading, error: dataError } = useCSVData();
   const [activeTab, setActiveTab] = useState("flights");
   
   // Form states
@@ -129,7 +142,24 @@ const SearchBar = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate inputs based on active tab
+    if (dataLoading) {
+      toast({
+        title: "Loading data",
+        description: "Please wait while we load the travel data.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (dataError) {
+      toast({
+        title: "Data error",
+        description: "Unable to load travel data. Please try again later.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (activeTab === 'flights') {
       if (!departureCity || !destinationCity || !departureDate) {
         toast({
@@ -146,8 +176,20 @@ const SearchBar = () => {
       // Simulate API call delay
       setTimeout(() => {
         // Get mock flight results
-        const results = mockFlightResults(departureCity, destinationCity);
-        setSearchResults(results);
+        const flightResults = searchFlights(flightsData, departureCity, destinationCity, departureDate);
+        
+        const formattedResults: SearchResult[] = flightResults.map(flight => ({
+          provider: flight.name || flight.carrier,
+          price: generateMockPrice('flight', flight.flight),
+          logo: `https://via.placeholder.com/40x20?text=${flight.carrier}`,
+          duration: formatDuration(flight.air_time),
+          stops: Math.random() > 0.7 ? 1 : 0, // Random stops for demo
+          departureTime: formatTime(flight.dep_time),
+          arrivalTime: formatTime(flight.arr_time),
+          rawData: flight
+        }));
+        
+        setSearchResults(formattedResults);
         setIsSearching(false);
         setShowResults(true);
       }, 1500);
@@ -168,15 +210,34 @@ const SearchBar = () => {
       // Simulate API call delay
       setTimeout(() => {
         // Get mock hotel results
-        const results = mockHotelResults(hotelLocation);
-        setSearchResults(results);
+        const hotelResults = searchHotels(hotelsData, hotelLocation, checkInDate, checkOutDate);
+        
+        const formattedResults: SearchResult[] = hotelResults.map(hotel => ({
+          provider: "Multiple Providers",
+          price: generateMockPrice('hotel', hotel.HotelCode),
+          logo: `https://via.placeholder.com/40x20?text=Hotel`,
+          hotel: {
+            name: hotel.hotel_name,
+            rating: hotel.HotelRating,
+            facilities: hotel.HotelFacilities,
+            website: hotel.HotelWebsiteUrl
+          },
+          rawData: hotel
+        }));
+        
+        setSearchResults(formattedResults);
         setIsSearching(false);
         setShowResults(true);
       }, 1500);
     }
   };
 
-  const handleBookNow = (provider: string, price: number) => {
+  const handleBookNow = (provider: string, price: number, result: SearchResult) => {
+    if (result.hotel?.website) {
+      // Open hotel website
+      window.open(result.hotel.website, '_blank');
+    }
+    
     toast({
       title: "Redirecting to provider",
       description: `Taking you to ${provider} to complete your booking for $${price}.`,
@@ -350,12 +411,17 @@ const SearchBar = () => {
             <Button 
               type="submit"
               className="w-full bg-brand-purple hover:bg-brand-purple-dark text-white"
-              disabled={isSearching}
+              disabled={isSearching || dataLoading}
             >
               {isSearching ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Searching...
+                </>
+              ) : dataLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Loading Data...
                 </>
               ) : (
                 <>
@@ -390,7 +456,7 @@ const SearchBar = () => {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-6 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-xs">
-                      {result.provider}
+                      {result.provider.length > 8 ? result.provider.substring(0, 8) : result.provider}
                     </div>
                     <div>
                       {activeTab === 'flights' ? (
@@ -406,6 +472,11 @@ const SearchBar = () => {
                           <p className="text-xs text-gray-500 dark:text-gray-400">
                             {result.hotel?.rating}/5 rating
                           </p>
+                          {result.hotel?.facilities && (
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                              {result.hotel.facilities.substring(0, 50)}...
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -416,7 +487,7 @@ const SearchBar = () => {
                       size="sm" 
                       variant="default"
                       className="mt-1 bg-brand-purple hover:bg-brand-purple-dark"
-                      onClick={() => handleBookNow(result.provider, result.price)}
+                      onClick={() => handleBookNow(result.provider, result.price, result)}
                     >
                       Book Now
                     </Button>
