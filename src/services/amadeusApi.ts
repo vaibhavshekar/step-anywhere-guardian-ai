@@ -1,6 +1,5 @@
-
 const AMADEUS_API_KEY = 'xNb1OTjIK17JNZNdMMWCTkDHTquop50O';
-const AMADEUS_CLIENT_SECRET = 'YOUR_CLIENT_SECRET'; // You'll need to provide the actual client secret
+const AMADEUS_CLIENT_SECRET = 'RX5jCftISZiXPlh6';
 const AMADEUS_BASE_URL_HOTELS = 'https://test.api.amadeus.com/v3';
 const AMADEUS_BASE_URL_FLIGHTS = 'https://test.api.amadeus.com/v2';
 
