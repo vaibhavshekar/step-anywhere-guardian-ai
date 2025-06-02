@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Shield, Star, Users, MessageSquare, Hotel, Plane } from 'lucide-react';
@@ -9,6 +8,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SafetyIndicator from '@/components/SafetyIndicator';
+import NewsSection from '@/components/NewsSection';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AIAssistant from '@/components/AIAssistant';
@@ -297,51 +297,59 @@ const DestinationDetail = () => {
             </TabsContent>
             
             <TabsContent value="safety" className="space-y-8">
-              <div className="bg-card rounded-lg border border-border p-6">
-                <div className="flex items-center gap-4 mb-6">
-                  <SafetyIndicator 
-                    level={destination.safetyLevel} 
-                    reason={destination.safetyReason} 
-                  />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <div className="bg-card rounded-lg border border-border p-6">
+                    <div className="flex items-center gap-4 mb-6">
+                      <SafetyIndicator 
+                        level={destination.safetyLevel} 
+                        reason={destination.safetyReason} 
+                      />
+                    </div>
+                    
+                    <h3 className="text-lg font-medium mb-3">Safety Overview</h3>
+                    <p className="text-muted-foreground mb-6">
+                      {destination.safetyReason}
+                      {destination.safetyLevel === 'safe' && " The local authorities maintain good security standards and tourists rarely experience serious problems."}
+                      {destination.safetyLevel === 'moderate' && " Follow basic safety precautions and stay informed about local conditions during your stay."}
+                      {destination.safetyLevel === 'unsafe' && " Consider whether your journey is essential and take extreme caution if you decide to travel here."}
+                    </p>
+                    
+                    <Separator className="my-6" />
+                    
+                    <h3 className="text-lg font-medium mb-3">Safety Tips</h3>
+                    <ul className="space-y-2 text-muted-foreground mb-6">
+                      <li className="flex items-start">
+                        <Shield className="h-4 w-4 mr-2 mt-1 text-brand-purple" />
+                        Keep your valuables secure and be aware of your surroundings, especially in crowded areas.
+                      </li>
+                      <li className="flex items-start">
+                        <Shield className="h-4 w-4 mr-2 mt-1 text-brand-purple" />
+                        Register with your embassy or consulate upon arrival.
+                      </li>
+                      <li className="flex items-start">
+                        <Shield className="h-4 w-4 mr-2 mt-1 text-brand-purple" />
+                        Carry a photocopy of your passport and keep the original in a secure location.
+                      </li>
+                      <li className="flex items-start">
+                        <Shield className="h-4 w-4 mr-2 mt-1 text-brand-purple" />
+                        Research local customs and dress codes to respect local traditions.
+                      </li>
+                    </ul>
+                    
+                    <Alert className="border-brand-purple/30">
+                      <Shield className="h-4 w-4 text-brand-purple" />
+                      <AlertTitle>Stay Informed</AlertTitle>
+                      <AlertDescription>
+                        Safety conditions can change. Check for the latest travel advisories before and during your trip.
+                      </AlertDescription>
+                    </Alert>
+                  </div>
                 </div>
                 
-                <h3 className="text-lg font-medium mb-3">Safety Overview</h3>
-                <p className="text-muted-foreground mb-6">
-                  {destination.safetyReason}
-                  {destination.safetyLevel === 'safe' && " The local authorities maintain good security standards and tourists rarely experience serious problems."}
-                  {destination.safetyLevel === 'moderate' && " Follow basic safety precautions and stay informed about local conditions during your stay."}
-                  {destination.safetyLevel === 'unsafe' && " Consider whether your journey is essential and take extreme caution if you decide to travel here."}
-                </p>
-                
-                <Separator className="my-6" />
-                
-                <h3 className="text-lg font-medium mb-3">Safety Tips</h3>
-                <ul className="space-y-2 text-muted-foreground mb-6">
-                  <li className="flex items-start">
-                    <Shield className="h-4 w-4 mr-2 mt-1 text-brand-purple" />
-                    Keep your valuables secure and be aware of your surroundings, especially in crowded areas.
-                  </li>
-                  <li className="flex items-start">
-                    <Shield className="h-4 w-4 mr-2 mt-1 text-brand-purple" />
-                    Register with your embassy or consulate upon arrival.
-                  </li>
-                  <li className="flex items-start">
-                    <Shield className="h-4 w-4 mr-2 mt-1 text-brand-purple" />
-                    Carry a photocopy of your passport and keep the original in a secure location.
-                  </li>
-                  <li className="flex items-start">
-                    <Shield className="h-4 w-4 mr-2 mt-1 text-brand-purple" />
-                    Research local customs and dress codes to respect local traditions.
-                  </li>
-                </ul>
-                
-                <Alert className="border-brand-purple/30">
-                  <Shield className="h-4 w-4 text-brand-purple" />
-                  <AlertTitle>Stay Informed</AlertTitle>
-                  <AlertDescription>
-                    Safety conditions can change. Check for the latest travel advisories before and during your trip.
-                  </AlertDescription>
-                </Alert>
+                <div className="space-y-6">
+                  <NewsSection cityName={destination.name} />
+                </div>
               </div>
             </TabsContent>
             
