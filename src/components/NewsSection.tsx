@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { ExternalLink, Clock, News } from 'lucide-react';
+import { ExternalLink, Clock, Newspaper } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -56,7 +56,7 @@ const NewsSection = ({ cityName }: NewsSectionProps) => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <News className="h-5 w-5 mr-2 text-brand-purple" />
+            <Newspaper className="h-5 w-5 mr-2 text-brand-purple" />
             Latest News
           </CardTitle>
         </CardHeader>
@@ -80,7 +80,7 @@ const NewsSection = ({ cityName }: NewsSectionProps) => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <News className="h-5 w-5 mr-2 text-brand-purple" />
+            <Newspaper className="h-5 w-5 mr-2 text-brand-purple" />
             Latest News
           </CardTitle>
         </CardHeader>
@@ -97,7 +97,7 @@ const NewsSection = ({ cityName }: NewsSectionProps) => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center">
-          <News className="h-5 w-5 mr-2 text-brand-purple" />
+          <Newspaper className="h-5 w-5 mr-2 text-brand-purple" />
           Latest News - {cityName}
         </CardTitle>
       </CardHeader>

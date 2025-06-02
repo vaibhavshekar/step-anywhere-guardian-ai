@@ -48,13 +48,15 @@ const FlightCard = ({
   isCheapest,
   departureCity,
   destinationCity,
-  allResults
+  allResults,
+  onBookNow
 }: { 
   result: SearchResult; 
   isCheapest: boolean;
   departureCity: string;
   destinationCity: string;
   allResults: SearchResult[];
+  onBookNow: (provider: string, price: number, result: SearchResult) => void;
 }) => (
   <div className={`border rounded-lg p-6 transition-colors ${
     isCheapest ? 'border-green-500 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-gray-700'
@@ -139,7 +141,7 @@ const FlightCard = ({
           size="lg" 
           variant="default"
           className="w-full bg-brand-purple hover:bg-brand-purple-dark"
-          onClick={() => handleBookNow(result.provider, result.price, result)}
+          onClick={() => onBookNow(result.provider, result.price, result)}
         >
           Book Now
         </Button>
@@ -580,6 +582,7 @@ const SearchBar = () => {
                   departureCity={departureCity}
                   destinationCity={destinationCity}
                   allResults={searchResults}
+                  onBookNow={handleBookNow}
                 />
               ))
             )}
