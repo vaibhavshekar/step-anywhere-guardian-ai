@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Calendar, Users, Loader2 } from 'lucide-react';
+import { Search, MapPin, Calendar, Users, Loader2, ArrowRight, Clock, PlaneTakeoff, PlaneLanding, Filter, SortAsc, SortDesc, Luggage, Shield, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -13,6 +12,14 @@ import {
   formatAmadeusHotelData,
   formatAmadeusFlightData
 } from '@/services/amadeusApi';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+
+interface FlightFilter {
+  sortBy: 'price' | 'duration' | 'departure';
+  sortOrder: 'asc' | 'desc';
+  stops: 'all' | 'nonstop' | '1stop';
+}
 
 interface SearchResult {
   provider: string;
@@ -29,7 +36,140 @@ interface SearchResult {
     website?: string;
   };
   rawData?: any;
+  flightNumber?: string;
+  aircraft?: string;
+  baggageAllowance?: string;
+  refundable?: boolean;
+  cabinClass?: string;
 }
+
+const FlightCard = ({ 
+  result, 
+  isCheapest,
+  departureCity,
+  destinationCity,
+  allResults
+}: { 
+  result: SearchResult; 
+  isCheapest: boolean;
+  departureCity: string;
+  destinationCity: string;
+  allResults: SearchResult[];
+}) => (
+  <div className={`border rounded-lg p-6 transition-colors ${
+    isCheapest ? 'border-green-500 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-gray-700'
+  }`}>
+    <div className="flex justify-between items-start">
+      <div className="flex-1">
+        {/* Airline Info */}
+        <div className="flex items-center space-x-4 mb-6">
+        <div className="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+            <PlaneTakeoff className="w-8 h-8 text-gray-700 dark:text-gray-300" />
+          </div>
+          <div>
+            <div className="font-semibold text-lg">{result.provider}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              Flight {result.flightNumber}
+            </div>
+          </div>
+        </div>
+
+        {/* Flight Route */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between">
+            <div className="text-center flex-1">
+              <div className="font-bold text-xl">{result.departureTime}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">{departureCity}</div>
+            </div>
+            
+            <div className="flex-1 flex items-center justify-center">
+              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+              <div className="mx-4 flex flex-col items-center">
+                <Clock className="h-5 w-5 text-gray-400 mb-1" />
+                <span className="text-sm text-gray-500">{result.duration}</span>
+                <span className="text-xs text-gray-400 mt-1">
+                  {result.stops === 0 ? 'Nonstop' : `${result.stops} stop${result.stops > 1 ? 's' : ''}`}
+                </span>
+              </div>
+              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+            
+            <div className="text-center flex-1">
+              <div className="font-bold text-xl">{result.arrivalTime}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">{destinationCity}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Flight Details */}
+        <div className="grid grid-cols-3 gap-4 text-sm">
+          <div className="flex items-center space-x-2">
+            <PlaneTakeoff className="h-4 w-4 text-gray-400" />
+            <div>
+              <div className="text-gray-500 dark:text-gray-400">Aircraft</div>
+              <div className="font-medium">{result.aircraft}</div>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Luggage className="h-4 w-4 text-gray-400" />
+            <div>
+              <div className="text-gray-500 dark:text-gray-400">Baggage</div>
+              <div className="font-medium">{result.baggageAllowance}</div>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Shield className="h-4 w-4 text-gray-400" />
+            <div>
+              <div className="text-gray-500 dark:text-gray-400">Status</div>
+              <div className="font-medium">{result.refundable ? 'Refundable' : 'Non-refundable'}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Price and Booking */}
+      <div className="ml-8 text-right border-l pl-8 border-gray-200 dark:border-gray-700">
+        <div className="text-3xl font-bold text-brand-purple">${result.price}</div>
+        <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          {result.cabinClass}
+        </div>
+        <Button 
+          size="lg" 
+          variant="default"
+          className="w-full bg-brand-purple hover:bg-brand-purple-dark"
+          onClick={() => handleBookNow(result.provider, result.price, result)}
+        >
+          Book Now
+        </Button>
+      </div>
+    </div>
+
+    {isCheapest && (
+      <div className="mt-6 pt-4 border-t border-green-200 dark:border-green-800">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center text-green-700 dark:text-green-400">
+            <Star className="h-5 w-5 mr-2" />
+            <span className="font-medium">
+              Best price! Save ${Math.min(...allResults.filter(r => r !== result).map(r => r.price)) - result.price} compared to others
+            </span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <Badge variant="outline" className="text-xs bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+              {result.stops === 0 ? 'Nonstop' : `${result.stops} stop${result.stops > 1 ? 's' : ''}`}
+            </Badge>
+            {result.refundable && (
+              <Badge variant="outline" className="text-xs bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+                Refundable
+              </Badge>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+);
 
 const SearchBar = () => {
   const navigate = useNavigate();
@@ -54,6 +194,40 @@ const SearchBar = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+
+  const [filters, setFilters] = useState<FlightFilter>({
+    sortBy: 'price',
+    sortOrder: 'asc',
+    stops: 'all'
+  });
+
+  const getFilteredAndSortedResults = (results: SearchResult[]) => {
+    let filtered = [...results];
+    
+    // Apply stops filter
+    if (filters.stops !== 'all') {
+      filtered = filtered.filter(result => 
+        filters.stops === 'nonstop' ? result.stops === 0 : result.stops === 1
+      );
+    }
+    
+    // Apply sorting
+    filtered.sort((a, b) => {
+      const multiplier = filters.sortOrder === 'asc' ? 1 : -1;
+      switch (filters.sortBy) {
+        case 'price':
+          return (a.price - b.price) * multiplier;
+        case 'duration':
+          return (parseInt(a.duration || '0') - parseInt(b.duration || '0')) * multiplier;
+        case 'departure':
+          return (a.departureTime || '').localeCompare(b.departureTime || '') * multiplier;
+        default:
+          return 0;
+      }
+    });
+    
+    return filtered;
+  };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -334,80 +508,86 @@ const SearchBar = () => {
 
       {/* Search Results Dialog */}
       <Dialog open={showResults} onOpenChange={handleCloseResults}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle className="flex justify-between items-center">
-              <span>{activeTab === "flights" ? `Flights: ${departureCity} to ${destinationCity}` : `Hotels in ${hotelLocation}`}</span>
+              <span className="text-xl">
+                {activeTab === "flights" ? (
+                  <div className="flex items-center space-x-2">
+                    <span>{departureCity}</span>
+                    <ArrowRight className="h-4 w-4" />
+                    <span>{destinationCity}</span>
+                  </div>
+                ) : `Hotels in ${hotelLocation}`}
+              </span>
               {cheapestOption && (
-                <span className="text-sm bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 px-2 py-1 rounded-full">
+                <span className="text-sm bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 px-3 py-1 rounded-full">
                   Best Deal: ${cheapestOption.price} ({cheapestOption.provider})
                 </span>
               )}
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4 mt-4">
+          {activeTab === 'flights' && (
+            <div className="flex items-center space-x-4 mb-4 flex-shrink-0">
+              <Select
+                value={filters.sortBy}
+                onValueChange={(value) => setFilters(prev => ({ ...prev, sortBy: value as FlightFilter['sortBy'] }))}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="price">Price</SelectItem>
+                  <SelectItem value="duration">Duration</SelectItem>
+                  <SelectItem value="departure">Departure Time</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setFilters(prev => ({ ...prev, sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc' }))}
+              >
+                {filters.sortOrder === 'asc' ? <SortAsc className="h-4 w-4" /> : <SortDesc className="h-4 w-4" />}
+              </Button>
+
+              <Select
+                value={filters.stops}
+                onValueChange={(value) => setFilters(prev => ({ ...prev, stops: value as FlightFilter['stops'] }))}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by stops" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Flights</SelectItem>
+                  <SelectItem value="nonstop">Nonstop Only</SelectItem>
+                  <SelectItem value="1stop">1 Stop Only</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          <div className="overflow-y-auto flex-1 pr-2 space-y-4">
             {searchResults.length === 0 ? (
               <p className="text-center text-gray-500 dark:text-gray-400">No results found. Try different search criteria.</p>
             ) : (
-              searchResults.map((result, index) => (
-                <div key={index} className={`border rounded-lg p-4 transition-colors ${
-                  cheapestOption === result ? 'border-green-500 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-gray-700'
-                }`}>
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-6 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-xs">
-                        {result.provider.length > 8 ? result.provider.substring(0, 8) : result.provider}
-                      </div>
-                      <div>
-                        {activeTab === 'flights' ? (
-                          <div className="text-sm">
-                            <span className="font-medium">{result.departureTime} - {result.arrivalTime}</span>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {result.duration} • {result.stops === 0 ? 'Nonstop' : `${result.stops} stop${result.stops > 1 ? 's' : ''}`}
-                            </p>
-                          </div>
-                        ) : (
-                          <div className="text-sm">
-                            <span className="font-medium">{result.hotel?.name}</span>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {result.hotel?.rating}/5 rating
-                            </p>
-                            {result.hotel?.facilities && (
-                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                {result.hotel.facilities.substring(0, 50)}...
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-lg font-bold">${result.price}</div>
-                      <Button 
-                        size="sm" 
-                        variant="default"
-                        className="mt-1 bg-brand-purple hover:bg-brand-purple-dark"
-                        onClick={() => handleBookNow(result.provider, result.price, result)}
-                      >
-                        Book Now
-                      </Button>
-                    </div>
-                  </div>
-
-                  {cheapestOption === result && (
-                    <div className="mt-2 text-xs text-green-700 dark:text-green-400 font-medium">
-                      Best price! Save ${Math.min(...searchResults.filter(r => r !== result).map(r => r.price)) - result.price} compared to others
-                    </div>
-                  )}
-                </div>
+              getFilteredAndSortedResults(searchResults).map((result, index) => (
+                <FlightCard
+                  key={index}
+                  result={result}
+                  isCheapest={cheapestOption === result}
+                  departureCity={departureCity}
+                  destinationCity={destinationCity}
+                  allResults={searchResults}
+                />
               ))
             )}
-
-            <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
-              Prices and availability from Amadeus Travel API. Safety information provided alongside booking details.
-            </p>
           </div>
+
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-4 flex-shrink-0">
+            Prices and availability from Amadeus Travel API. Safety information provided alongside booking details.
+          </p>
         </DialogContent>
       </Dialog>
     </div>

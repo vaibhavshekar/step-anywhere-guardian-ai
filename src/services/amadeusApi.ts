@@ -30,6 +30,44 @@ const getAccessToken = async (): Promise<string> => {
   return data.access_token;
 };
 
+// Utility function to convert date format with validation
+const convertToAmadeusDateFormat = (dateString: string): string => {
+  // Already in correct format
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
+
+  // Handle MM/DD/YYYY or DD/MM/YYYY formats
+  if (dateString.includes('/')) {
+    const parts = dateString.split('/');
+    if (parts.length !== 3) throw new Error(`Invalid date format: ${dateString}. Use YYYY-MM-DD, MM/DD/YYYY, or DD/MM/YYYY.`);
+    
+    // Detect format (if first part > 12, it's DD/MM/YYYY)
+    if (parseInt(parts[0]) > 12 && parseInt(parts[1]) <= 12) {
+      return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+    }
+    // Default to MM/DD/YYYY
+    return `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
+  }
+  
+  throw new Error(`Invalid date format: ${dateString}. Use YYYY-MM-DD, MM/DD/YYYY, or DD/MM/YYYY.`);
+};
+
+// Validate date range
+const validateDateRange = (checkInDate: string, checkOutDate: string) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Remove time component
+  
+  const checkIn = new Date(checkInDate);
+  const checkOut = new Date(checkOutDate);
+
+  if (checkIn >= checkOut) {
+    throw new Error("checkOutDate must be after checkInDate");
+  }
+
+  if (checkIn < today) {
+    throw new Error("checkInDate cannot be in the past");
+  }
+};
+
 // Search hotels using Hotel List API
 export const searchAmadeusHotels = async (
   cityCode: string,
@@ -38,16 +76,28 @@ export const searchAmadeusHotels = async (
   adults: number = 2
 ) => {
   try {
+    // Validate city code
+    if (!/^[A-Za-z]{3}$/.test(cityCode)) {
+      throw new Error("Invalid city code. Use 3-letter IATA codes (e.g., 'NYC').");
+    }
+    
     console.log(`Searching hotels in ${cityCode} for ${adults} adults`);
     const token = await getAccessToken();
     
+    // Convert dates to Amadeus format
+    const formattedCheckInDate = convertToAmadeusDateFormat(checkInDate);
+    const formattedCheckOutDate = convertToAmadeusDateFormat(checkOutDate);
+    
+    // Validate date range
+    validateDateRange(formattedCheckInDate, formattedCheckOutDate);
+    
     const params = new URLSearchParams({
       cityCode: cityCode.toUpperCase(),
-      checkInDate,
-      checkOutDate,
+      checkInDate: formattedCheckInDate,
+      checkOutDate: formattedCheckOutDate,
       adults: adults.toString(),
       currency: 'USD',
-      hotelSource: 'ALL',
+      // hotelSource: 'ALL',  // Removed optional param for simplicity
     });
 
     console.log('Hotel search params:', params.toString());
@@ -59,10 +109,14 @@ export const searchAmadeusHotels = async (
       },
     });
 
+    // Handle API-specific errors
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Hotel search failed:', errorData);
-      throw new Error(`Hotel search failed: ${errorData.errors?.[0]?.detail || response.statusText}`);
+      let errorMsg = `Hotel search failed: ${response.statusText}`;
+      try {
+        const errorData = await response.json();
+        errorMsg = errorData.errors?.[0]?.detail || errorMsg;
+      } catch (e) {}
+      throw new Error(errorMsg);
     }
 
     const data = await response.json();
@@ -83,20 +137,25 @@ export const searchAmadeusFlights = async (
   returnDate?: string
 ) => {
   try {
+    // Validate airport codes
+    if (!/^[A-Za-z]{3}$/.test(originCode) || !/^[A-Za-z]{3}$/.test(destinationCode)) {
+      throw new Error("Invalid airport code. Use 3-letter IATA codes (e.g., 'JFK').");
+    }
+    
     console.log(`Searching flights from ${originCode} to ${destinationCode} for ${adults} adults`);
     const token = await getAccessToken();
     
     const params = new URLSearchParams({
       originLocationCode: originCode.toUpperCase(),
       destinationLocationCode: destinationCode.toUpperCase(),
-      departureDate,
+      departureDate: convertToAmadeusDateFormat(departureDate),
       adults: adults.toString(),
       currencyCode: 'USD',
       max: '10',
     });
 
     if (returnDate) {
-      params.append('returnDate', returnDate);
+      params.append('returnDate', convertToAmadeusDateFormat(returnDate));
     }
 
     console.log('Flight search params:', params.toString());
@@ -109,9 +168,12 @@ export const searchAmadeusFlights = async (
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Flight search failed:', errorData);
-      throw new Error(`Flight search failed: ${errorData.errors?.[0]?.detail || response.statusText}`);
+      let errorMsg = `Flight search failed: ${response.statusText}`;
+      try {
+        const errorData = await response.json();
+        errorMsg = errorData.errors?.[0]?.detail || errorMsg;
+      } catch (e) {}
+      throw new Error(errorMsg);
     }
 
     const data = await response.json();
@@ -150,7 +212,7 @@ export const formatAmadeusFlightData = (flightOffer: any) => {
   
   // Calculate duration
   const duration = flightOffer.itineraries?.[0]?.duration || 'PT0H0M';
-  const durationMatch = duration.match(/PT(\d+H)?(\d+M)?/);
+  const durationMatch = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
   const hours = durationMatch?.[1] ? parseInt(durationMatch[1]) : 0;
   const minutes = durationMatch?.[2] ? parseInt(durationMatch[2]) : 0;
   const formattedDuration = `${hours}h ${minutes}m`;
