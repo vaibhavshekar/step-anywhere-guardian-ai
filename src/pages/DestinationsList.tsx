@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -6,6 +5,7 @@ import AIAssistant from '@/components/AIAssistant';
 import DestinationCard from '@/components/DestinationCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   Select, 
   SelectContent, 
@@ -13,13 +13,18 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { ShieldCheck, Search, MapPin, Globe } from 'lucide-react';
+import { ShieldCheck, Search, MapPin, Globe, AlertCircle } from 'lucide-react';
 import { featuredDestinations, Destination } from '@/data/destinations';
+import { fetchNewsForLocation, analyzeSentiment } from '@/services/newsApi';
 
 const DestinationsList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [safetyFilter, setSafetyFilter] = useState<string>('all');
   const [region, setRegion] = useState<string>('all');
+  const [articles, setArticles] = useState<any[]>([]);
+  const [sentimentScore, setSentimentScore] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Filter destinations based on search term and filters
   const filteredDestinations = featuredDestinations.filter((destination) => {
@@ -31,11 +36,49 @@ const DestinationsList = () => {
       safetyFilter === 'all' || 
       destination.safetyLevel === safetyFilter;
     
-    // In a real app, we'd have region data. For now, all match
-    const matchesRegion = true;
+    const matchesRegion = region === 'all' || destination.region === region;
     
     return matchesSearch && matchesSafety && matchesRegion;
   });
+
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return;
+
+    setLoading(true);
+    setError(null);
+    setArticles([]);
+    setSentimentScore(null);
+    
+    try {
+      console.log('Starting news search for:', searchTerm);
+      const newsArticles = await fetchNewsForLocation(searchTerm);
+      console.log('Received news articles:', newsArticles.length);
+      
+      if (newsArticles.length === 0) {
+        setError('No recent news found for this location.');
+        return;
+      }
+
+      setArticles(newsArticles);
+      const score = analyzeSentiment(newsArticles);
+      setSentimentScore(score);
+    } catch (err) {
+      console.error('Search error:', err);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to fetch news. Please try again later.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getSentimentColor = (score: number) => {
+    if (score >= 7) return 'text-green-500';
+    if (score >= 4) return 'text-yellow-500';
+    return 'text-red-500';
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -60,9 +103,10 @@ const DestinationsList = () => {
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input 
                       className="pl-10" 
-                      placeholder="Search destinations or countries" 
+                      placeholder="Search destinations, cities, or countries" 
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                     />
                   </div>
                 </div>
@@ -107,13 +151,100 @@ const DestinationsList = () => {
                 </div>
                 
                 <div className="flex items-end">
-                  <Button className="w-full bg-brand-purple hover:bg-brand-purple-dark text-white">
-                    <Search className="h-4 w-4 mr-2" />
-                    Filter Results
+                  <Button 
+                    className="w-full bg-brand-purple hover:bg-brand-purple-dark text-white"
+                    onClick={handleSearch}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Searching...
+                      </>
+                    ) : (
+                      <>
+                        <Search className="h-4 w-4 mr-2" />
+                        Search
+                      </>
+                    )}
                   </Button>
                 </div>
               </div>
             </div>
+
+            {/* News Results */}
+            {error && (
+              <div className="flex items-center gap-2 text-red-500 mb-4 mt-4">
+                <AlertCircle className="h-4 w-4" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {loading && (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-purple mx-auto mb-4"></div>
+                <p className="text-gray-600">Fetching news and analyzing safety...</p>
+              </div>
+            )}
+
+            {!loading && sentimentScore !== null && (
+              <Card className="mt-6 mb-6">
+                <CardHeader>
+                  <CardTitle>Safety Rating</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center">
+                    <div className={`text-4xl font-bold ${getSentimentColor(sentimentScore)}`}>
+                      {sentimentScore}/10
+                    </div>
+                    <p className="text-gray-500 mt-2">
+                      Based on recent news sentiment analysis
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {!loading && articles.length > 0 && (
+              <div className="mt-6">
+                <h2 className="text-2xl font-bold mb-4">Recent News</h2>
+                <div className="space-y-4 max-h-[600px] overflow-y-auto pr-4 custom-scrollbar">
+                  {articles.map((article, index) => (
+                    <Card key={index} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex gap-4">
+                          {article.urlToImage && (
+                            <img
+                              src={article.urlToImage}
+                              alt={article.title}
+                              className="w-24 h-24 object-cover rounded flex-shrink-0"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold mb-2">
+                              <a
+                                href={article.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-brand-purple line-clamp-2"
+                              >
+                                {article.title}
+                              </a>
+                            </h3>
+                            <p className="text-sm text-gray-500 mb-2">
+                              {article.source.name} • {new Date(article.publishedAt).toLocaleDateString()}
+                            </p>
+                            <p className="text-sm text-gray-600 line-clamp-2">
+                              {article.description}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
         

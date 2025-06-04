@@ -19,13 +19,13 @@ const Header = () => {
             Home
           </Link>
           <Link to="/destinations" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
-            Destinations
+            Destinations and Safety Guide
           </Link>
           
           
-          <Link to="/safety-guide" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
+          {/* <Link to="/safety-guide" className="text-sm font-medium text-foreground hover:text-brand-purple transition-colors">
             Safety Guide
-          </Link>
+          </Link> */}
         </nav>
         
         <div className="flex items-center space-x-4">

@@ -1,6 +1,6 @@
 const AMADEUS_API_KEY = 'xNb1OTjIK17JNZNdMMWCTkDHTquop50O';
 const AMADEUS_CLIENT_SECRET = 'RX5jCftISZiXPlh6';
-const AMADEUS_BASE_URL_HOTELS = 'https://test.api.amadeus.com/v3';
+const AMADEUS_BASE_URL_HOTELS = 'https://test.api.amadeus.com';
 const AMADEUS_BASE_URL_FLIGHTS = 'https://test.api.amadeus.com/v2';
 
 // Get access token for Amadeus API
@@ -58,6 +58,7 @@ const validateDateRange = (checkInDate: string, checkOutDate: string) => {
   
   const checkIn = new Date(checkInDate);
   const checkOut = new Date(checkOutDate);
+  console.log(checkIn, checkOut);
 
   if (checkIn >= checkOut) {
     throw new Error("checkOutDate must be after checkInDate");
@@ -76,12 +77,17 @@ export const searchAmadeusHotels = async (
   adults: number = 2
 ) => {
   try {
-    // Validate city code
-    if (!/^[A-Za-z]{3}$/.test(cityCode)) {
-      throw new Error("Invalid city code. Use 3-letter IATA codes (e.g., 'NYC').");
+    // Clean and validate city code
+    const cleanCityCode = cityCode
+      .toUpperCase()
+      .replace(/[^A-Z]/g, '') // Remove non-letters
+      .substring(0, 3); // Take first 3 letters
+
+    if (cleanCityCode.length !== 3) {
+      throw new Error("Invalid city code. Must be 3 letters (e.g., NYC, LON)");
     }
     
-    console.log(`Searching hotels in ${cityCode} for ${adults} adults`);
+    console.log(`Searching hotels in ${cleanCityCode} for ${adults} adults`);
     const token = await getAccessToken();
     
     // Convert dates to Amadeus format
@@ -91,18 +97,18 @@ export const searchAmadeusHotels = async (
     // Validate date range
     validateDateRange(formattedCheckInDate, formattedCheckOutDate);
     
+    // CORRECTED ENDPOINT - using v1 reference data API
     const params = new URLSearchParams({
-      cityCode: cityCode.toUpperCase(),
-      checkInDate: formattedCheckInDate,
-      checkOutDate: formattedCheckOutDate,
-      adults: adults.toString(),
-      currency: 'USD',
-      // hotelSource: 'ALL',  // Removed optional param for simplicity
+      cityCode: cleanCityCode,
+      radius: '50', // Default radius in KM
+      radiusUnit: 'KM',
+      hotelSource: 'ALL'
     });
 
     console.log('Hotel search params:', params.toString());
 
-    const response = await fetch(`${AMADEUS_BASE_URL_HOTELS}/shopping/hotel-offers?${params}`, {
+    // CORRECTED API ENDPOINT
+    const response = await fetch(`${AMADEUS_BASE_URL_HOTELS}/v1/reference-data/locations/hotels/by-city?${params}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -120,8 +126,21 @@ export const searchAmadeusHotels = async (
     }
 
     const data = await response.json();
-    console.log(`Found ${data.data?.length || 0} hotel offers`);
-    return data.data || [];
+    console.log(`Found ${data.data?.length || 0} hotel references`);
+    
+    // Format hotel data to match our UI expectations
+    return data.data.map((hotel: any) => ({
+      provider: 'Amadeus',
+      price: 0, // Placeholder - actual pricing needs separate offer API
+      logo: 'https://via.placeholder.com/40x20?text=Amadeus',
+      hotel: {
+        name: hotel?.name || 'Unknown Hotel',
+        rating: 0, // Placeholder - ratings need separate API
+        facilities: '', // Placeholder
+        website: `https://amadeus.com/hotel/${hotel?.hotelId}`,
+      },
+      rawData: hotel,
+    }));
   } catch (error) {
     console.error('Error searching hotels:', error);
     throw error;

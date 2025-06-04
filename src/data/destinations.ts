@@ -1,4 +1,3 @@
-
 // Define the destination interface
 export interface Destination {
   id: string;
@@ -11,10 +10,13 @@ export interface Destination {
   hotelPrice?: number;
   popularityScore?: number;
   currentEvents?: string[];
+  region?: string;
 }
 
 // Sample destinations data
-export const featuredDestinations: Destination[] = [{
+export const featuredDestinations: Destination[] = [
+  // Existing destinations
+  {
   id: '1',
   name: 'Paris',
   country: 'France',
@@ -24,8 +26,10 @@ export const featuredDestinations: Destination[] = [{
   flightPrice: 499,
   hotelPrice: 120,
   popularityScore: 9.2,
-  currentEvents: ['Fashion Week', 'Museum Exhibition']
-}, {
+    currentEvents: ['Fashion Week', 'Museum Exhibition'],
+    region: 'europe'
+  },
+  {
   id: '2',
   name: 'Tokyo',
   country: 'Japan',
@@ -35,8 +39,10 @@ export const featuredDestinations: Destination[] = [{
   flightPrice: 899,
   hotelPrice: 150,
   popularityScore: 9.5,
-  currentEvents: ['Cherry Blossom Festival', 'Tech Expo']
-}, {
+    currentEvents: ['Cherry Blossom Festival', 'Tech Expo'],
+    region: 'asia'
+  },
+  {
   id: '3',
   name: 'Cairo',
   country: 'Egypt',
@@ -46,8 +52,10 @@ export const featuredDestinations: Destination[] = [{
   flightPrice: 599,
   hotelPrice: 75,
   popularityScore: 7.8,
-  currentEvents: ['Archaeological Exhibition']
-}, {
+    currentEvents: ['Archaeological Exhibition'],
+    region: 'africa'
+  },
+  {
   id: '4',
   name: 'Bali',
   country: 'Indonesia',
@@ -57,8 +65,10 @@ export const featuredDestinations: Destination[] = [{
   flightPrice: 799,
   hotelPrice: 90,
   popularityScore: 8.9,
-  currentEvents: ['Cultural Festival', 'Surf Competition']
-}, {
+    currentEvents: ['Cultural Festival', 'Surf Competition'],
+    region: 'asia'
+  },
+  {
   id: '5',
   name: 'New York',
   country: 'United States',
@@ -68,8 +78,10 @@ export const featuredDestinations: Destination[] = [{
   flightPrice: 349,
   hotelPrice: 200,
   popularityScore: 9.0,
-  currentEvents: ['Broadway Shows', 'Art Exhibitions']
-}, {
+    currentEvents: ['Broadway Shows', 'Art Exhibitions'],
+    region: 'northamerica'
+  },
+  {
   id: '6',
   name: 'Bangkok',
   country: 'Thailand',
@@ -79,5 +91,581 @@ export const featuredDestinations: Destination[] = [{
   flightPrice: 699,
   hotelPrice: 60,
   popularityScore: 8.7,
-  currentEvents: ['Water Festival', 'Food Fair']
-}];
+    currentEvents: ['Water Festival', 'Food Fair'],
+    region: 'asia'
+  },
+
+  // New destinations
+  {
+    id: '7',
+    name: 'Rome',
+    country: 'Italy',
+    image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Generally safe for tourists. Be aware of pickpockets in crowded areas.',
+    flightPrice: 549,
+    hotelPrice: 130,
+    popularityScore: 9.1,
+    currentEvents: ['Cultural Festival', 'Food & Wine Expo'],
+    region: 'europe'
+  },
+  {
+    id: '8',
+    name: 'Sydney',
+    country: 'Australia',
+    image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe city with excellent public services and healthcare.',
+    flightPrice: 1299,
+    hotelPrice: 180,
+    popularityScore: 8.8,
+    currentEvents: ['Opera Season', 'Beach Festival'],
+    region: 'oceania'
+  },
+  {
+    id: '9',
+    name: 'Dubai',
+    country: 'UAE',
+    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with strict laws and excellent security.',
+    flightPrice: 899,
+    hotelPrice: 250,
+    popularityScore: 8.9,
+    currentEvents: ['Shopping Festival', 'Food Festival'],
+    region: 'asia'
+  },
+  {
+    id: '10',
+    name: 'Barcelona',
+    country: 'Spain',
+    image: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'moderate',
+    safetyReason: 'Be cautious of pickpockets in tourist areas and on public transport.',
+    flightPrice: 499,
+    hotelPrice: 110,
+    popularityScore: 8.7,
+    currentEvents: ['Music Festival', 'Art Exhibition'],
+    region: 'europe'
+  },
+  {
+    id: '11',
+    name: 'Singapore',
+    country: 'Singapore',
+    image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Extremely safe with strict laws and excellent public services.',
+    flightPrice: 999,
+    hotelPrice: 200,
+    popularityScore: 9.2,
+    currentEvents: ['Food Festival', 'Shopping Festival'],
+    region: 'asia'
+  },
+  {
+    id: '12',
+    name: 'Amsterdam',
+    country: 'Netherlands',
+    image: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe city with excellent public transport and healthcare.',
+    flightPrice: 449,
+    hotelPrice: 140,
+    popularityScore: 8.6,
+    currentEvents: ['Tulip Festival', 'Museum Night'],
+    region: 'europe'
+  },
+  {
+    id: '13',
+    name: 'Rio de Janeiro',
+    country: 'Brazil',
+    image: 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'moderate',
+    safetyReason: 'Exercise caution in certain areas. Tourist zones are generally safe.',
+    flightPrice: 899,
+    hotelPrice: 100,
+    popularityScore: 8.4,
+    currentEvents: ['Carnival', 'Beach Festival'],
+    region: 'southamerica'
+  },
+  {
+    id: '14',
+    name: 'Hong Kong',
+    country: 'China',
+    image: 'https://images.unsplash.com/photo-1536599018102-9f803c140fc1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public transport and healthcare.',
+    flightPrice: 899,
+    hotelPrice: 180,
+    popularityScore: 8.8,
+    currentEvents: ['Shopping Festival', 'Food Festival'],
+    region: 'asia'
+  },
+  {
+    id: '15',
+    name: 'Vienna',
+    country: 'Austria',
+    image: 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe city with excellent public services.',
+    flightPrice: 599,
+    hotelPrice: 130,
+    popularityScore: 8.5,
+    currentEvents: ['Music Festival', 'Christmas Market'],
+    region: 'europe'
+  },
+  {
+    id: '16',
+    name: 'Cape Town',
+    country: 'South Africa',
+    image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'moderate',
+    safetyReason: 'Exercise caution in certain areas. Tourist zones are generally safe.',
+    flightPrice: 999,
+    hotelPrice: 120,
+    popularityScore: 8.3,
+    currentEvents: ['Wine Festival', 'Beach Festival'],
+    region: 'africa'
+  },
+  {
+    id: '17',
+    name: 'Seoul',
+    country: 'South Korea',
+    image: 'https://images.unsplash.com/photo-1538485399081-7c8edb7e1f1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public transport and healthcare.',
+    flightPrice: 899,
+    hotelPrice: 150,
+    popularityScore: 8.7,
+    currentEvents: ['K-Pop Festival', 'Food Festival'],
+    region: 'asia'
+  },
+  {
+    id: '18',
+    name: 'Istanbul',
+    country: 'Turkey',
+    image: 'https://images.unsplash.com/photo-1527838832700-5059252407fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'moderate',
+    safetyReason: 'Exercise normal precautions. Tourist areas are generally safe.',
+    flightPrice: 599,
+    hotelPrice: 90,
+    popularityScore: 8.2,
+    currentEvents: ['Cultural Festival', 'Food Festival'],
+    region: 'asia'
+  },
+  {
+    id: '19',
+    name: 'San Francisco',
+    country: 'United States',
+    image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'moderate',
+    safetyReason: 'Exercise normal precautions. Some areas require extra vigilance.',
+    flightPrice: 399,
+    hotelPrice: 250,
+    popularityScore: 8.6,
+    currentEvents: ['Tech Conference', 'Food Festival'],
+    region: 'northamerica'
+  },
+  {
+    id: '20',
+    name: 'Prague',
+    country: 'Czech Republic',
+    image: 'https://images.unsplash.com/photo-1519677100203-a0e668c92439?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public transport.',
+    flightPrice: 499,
+    hotelPrice: 100,
+    popularityScore: 8.4,
+    currentEvents: ['Music Festival', 'Christmas Market'],
+    region: 'europe'
+  },
+  {
+    id: '21',
+    name: 'Venice',
+    country: 'Italy',
+    image: 'https://images.unsplash.com/photo-1534113416831-3497c3e4739d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Generally safe. Be aware of pickpockets in crowded areas.',
+    flightPrice: 599,
+    hotelPrice: 180,
+    popularityScore: 8.8,
+    currentEvents: ['Carnival', 'Art Biennale'],
+    region: 'europe'
+  },
+  {
+    id: '22',
+    name: 'Mumbai',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'moderate',
+    safetyReason: 'Exercise normal precautions. Tourist areas are generally safe.',
+    flightPrice: 799,
+    hotelPrice: 80,
+    popularityScore: 7.9,
+    currentEvents: ['Film Festival', 'Food Festival'],
+    region: 'asia'
+  },
+  {
+    id: '23',
+    name: 'Vancouver',
+    country: 'Canada',
+    image: 'https://images.unsplash.com/photo-1582560475093-ba66accbc7f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 499,
+    hotelPrice: 180,
+    popularityScore: 8.5,
+    currentEvents: ['Film Festival', 'Food Festival'],
+    region: 'northamerica'
+  },
+  {
+    id: '24',
+    name: 'Marrakech',
+    country: 'Morocco',
+    image: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f11?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'moderate',
+    safetyReason: 'Exercise normal precautions. Tourist areas are generally safe.',
+    flightPrice: 699,
+    hotelPrice: 90,
+    popularityScore: 8.1,
+    currentEvents: ['Cultural Festival', 'Food Festival'],
+    region: 'africa'
+  },
+  {
+    id: '25',
+    name: 'Stockholm',
+    country: 'Sweden',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 599,
+    hotelPrice: 160,
+    popularityScore: 8.3,
+    currentEvents: ['Music Festival', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '26',
+    name: 'Hawaii',
+    country: 'United States',
+    image: 'https://images.unsplash.com/photo-1507876466758-bc54f384809c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 799,
+    hotelPrice: 300,
+    popularityScore: 9.0,
+    currentEvents: ['Surf Competition', 'Cultural Festival'],
+    region: 'oceania'
+  },
+  {
+    id: '27',
+    name: 'Budapest',
+    country: 'Hungary',
+    image: 'https://images.unsplash.com/photo-1551867633-194f125bddfa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public transport.',
+    flightPrice: 449,
+    hotelPrice: 90,
+    popularityScore: 8.2,
+    currentEvents: ['Music Festival', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '28',
+    name: 'Santorini',
+    country: 'Greece',
+    image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with friendly locals.',
+    flightPrice: 699,
+    hotelPrice: 200,
+    popularityScore: 8.9,
+    currentEvents: ['Wine Festival', 'Cultural Festival'],
+    region: 'europe'
+  },
+  {
+    id: '29',
+    name: 'Kyoto',
+    country: 'Japan',
+    image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 999,
+    hotelPrice: 140,
+    popularityScore: 8.7,
+    currentEvents: ['Cherry Blossom Festival', 'Cultural Festival'],
+    region: 'asia'
+  },
+  {
+    id: '30',
+    name: 'Lisbon',
+    country: 'Portugal',
+    image: 'https://images.unsplash.com/photo-1555881400-74d7acbe3b9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with friendly locals.',
+    flightPrice: 499,
+    hotelPrice: 100,
+    popularityScore: 8.4,
+    currentEvents: ['Music Festival', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '31',
+    name: 'Maldives',
+    country: 'Maldives',
+    image: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent resort security.',
+    flightPrice: 1299,
+    hotelPrice: 400,
+    popularityScore: 9.1,
+    currentEvents: ['Surf Competition', 'Cultural Festival'],
+    region: 'asia'
+  },
+  {
+    id: '32',
+    name: 'Edinburgh',
+    country: 'Scotland',
+    image: 'https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 549,
+    hotelPrice: 130,
+    popularityScore: 8.5,
+    currentEvents: ['Fringe Festival', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '33',
+    name: 'Buenos Aires',
+    country: 'Argentina',
+    image: 'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'moderate',
+    safetyReason: 'Exercise normal precautions. Tourist areas are generally safe.',
+    flightPrice: 899,
+    hotelPrice: 100,
+    popularityScore: 8.2,
+    currentEvents: ['Tango Festival', 'Food Festival'],
+    region: 'southamerica'
+  },
+  {
+    id: '34',
+    name: 'Helsinki',
+    country: 'Finland',
+    image: 'https://images.unsplash.com/photo-1519178611-0a0b1c2b0b0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 599,
+    hotelPrice: 150,
+    popularityScore: 8.3,
+    currentEvents: ['Design Week', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '35',
+    name: 'Auckland',
+    country: 'New Zealand',
+    image: 'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 1299,
+    hotelPrice: 160,
+    popularityScore: 8.4,
+    currentEvents: ['Food Festival', 'Cultural Festival'],
+    region: 'oceania'
+  },
+  {
+    id: '36',
+    name: 'Seville',
+    country: 'Spain',
+    image: 'https://images.unsplash.com/photo-1558370781-d6196949e317?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with friendly locals.',
+    flightPrice: 499,
+    hotelPrice: 110,
+    popularityScore: 8.2,
+    currentEvents: ['Flamenco Festival', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '37',
+    name: 'Hanoi',
+    country: 'Vietnam',
+    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with friendly locals.',
+    flightPrice: 799,
+    hotelPrice: 70,
+    popularityScore: 8.1,
+    currentEvents: ['Food Festival', 'Cultural Festival'],
+    region: 'asia'
+  },
+  {
+    id: '38',
+    name: 'Copenhagen',
+    country: 'Denmark',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 549,
+    hotelPrice: 160,
+    popularityScore: 8.4,
+    currentEvents: ['Food Festival', 'Cultural Festival'],
+    region: 'europe'
+  },
+  {
+    id: '39',
+    name: 'Kuala Lumpur',
+    country: 'Malaysia',
+    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 799,
+    hotelPrice: 90,
+    popularityScore: 8.3,
+    currentEvents: ['Food Festival', 'Shopping Festival'],
+    region: 'asia'
+  },
+  {
+    id: '40',
+    name: 'Oslo',
+    country: 'Norway',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 599,
+    hotelPrice: 180,
+    popularityScore: 8.2,
+    currentEvents: ['Music Festival', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '41',
+    name: 'Athens',
+    country: 'Greece',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with friendly locals.',
+    flightPrice: 499,
+    hotelPrice: 100,
+    popularityScore: 8.3,
+    currentEvents: ['Cultural Festival', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '42',
+    name: 'Jerusalem',
+    country: 'Israel',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'moderate',
+    safetyReason: 'Exercise normal precautions. Tourist areas are generally safe.',
+    flightPrice: 699,
+    hotelPrice: 150,
+    popularityScore: 8.1,
+    currentEvents: ['Cultural Festival', 'Food Festival'],
+    region: 'asia'
+  },
+  {
+    id: '43',
+    name: 'Dublin',
+    country: 'Ireland',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with friendly locals.',
+    flightPrice: 499,
+    hotelPrice: 140,
+    popularityScore: 8.4,
+    currentEvents: ['Music Festival', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '44',
+    name: 'Havana',
+    country: 'Cuba',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with friendly locals.',
+    flightPrice: 599,
+    hotelPrice: 80,
+    popularityScore: 8.0,
+    currentEvents: ['Music Festival', 'Cultural Festival'],
+    region: 'northamerica'
+  },
+  {
+    id: '45',
+    name: 'Warsaw',
+    country: 'Poland',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 449,
+    hotelPrice: 90,
+    popularityScore: 8.1,
+    currentEvents: ['Music Festival', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '46',
+    name: 'Bruges',
+    country: 'Belgium',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with friendly locals.',
+    flightPrice: 499,
+    hotelPrice: 120,
+    popularityScore: 8.3,
+    currentEvents: ['Chocolate Festival', 'Cultural Festival'],
+    region: 'europe'
+  },
+  {
+    id: '47',
+    name: 'Siem Reap',
+    country: 'Cambodia',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with friendly locals.',
+    flightPrice: 799,
+    hotelPrice: 60,
+    popularityScore: 8.0,
+    currentEvents: ['Cultural Festival', 'Food Festival'],
+    region: 'asia'
+  },
+  {
+    id: '48',
+    name: 'Porto',
+    country: 'Portugal',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with friendly locals.',
+    flightPrice: 499,
+    hotelPrice: 90,
+    popularityScore: 8.2,
+    currentEvents: ['Wine Festival', 'Food Festival'],
+    region: 'europe'
+  },
+  {
+    id: '49',
+    name: 'Queenstown',
+    country: 'New Zealand',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 1299,
+    hotelPrice: 150,
+    popularityScore: 8.5,
+    currentEvents: ['Adventure Festival', 'Food Festival'],
+    region: 'oceania'
+  },
+  {
+    id: '50',
+    name: 'Salzburg',
+    country: 'Austria',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    safetyLevel: 'safe',
+    safetyReason: 'Very safe with excellent public services.',
+    flightPrice: 599,
+    hotelPrice: 120,
+    popularityScore: 8.3,
+    currentEvents: ['Music Festival', 'Christmas Market'],
+    region: 'europe'
+  }
+];

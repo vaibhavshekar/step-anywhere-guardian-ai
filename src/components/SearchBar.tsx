@@ -6,8 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { 
-  searchAmadeusHotels, 
+import {
+  searchAmadeusHotels,
   searchAmadeusFlights,
   formatAmadeusHotelData,
   formatAmadeusFlightData
@@ -43,27 +43,129 @@ interface SearchResult {
   cabinClass?: string;
 }
 
-const FlightCard = ({ 
-  result, 
+// Test with valid city code
+searchAmadeusHotels('LON', '2025-06-05', '2025-06-07', 2)
+  .then(results => console.log(results))
+  .catch(error => console.error(error));
+
+const HotelCard = ({
+  result,
+  isCheapest,
+  allResults,
+  onBookNow
+}: {
+  result: SearchResult;
+  isCheapest: boolean;
+  allResults: SearchResult[];
+  onBookNow: (provider: string, price: number, result: SearchResult) => void;
+}) => (
+  <div className={`border rounded-lg p-6 transition-colors ${isCheapest ? 'border-green-500 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-gray-700'
+    }`}>
+    <div className="flex justify-between items-start">
+      <div className="flex-1">
+        {/* Hotel Info */}
+        <div className="flex items-center space-x-4 mb-4">
+          <div className="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-12 h-12" />
+          </div>
+          <div>
+            <div className="font-semibold text-xl">{result.hotel?.name}</div>
+            <div className="flex items-center mt-1">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`h-4 w-4 ${i < Math.floor(result.hotel?.rating || 0)
+                      ? 'fill-yellow-400 stroke-yellow-400'
+                      : 'stroke-gray-300 dark:stroke-gray-500'
+                    }`}
+                />
+              ))}
+              <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
+                {result.hotel?.rating?.toFixed(1) || 'N/A'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Facilities */}
+        {result.hotel?.facilities && (
+          <div className="mb-6">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">Facilities</div>
+            <div className="flex flex-wrap gap-2">
+              {result.hotel.facilities.split(',').map((facility, index) => (
+                <Badge
+                  key={index}
+                  variant="outline"
+                  className="text-xs bg-gray-100 dark:bg-gray-700"
+                >
+                  {facility.trim()}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Price and Booking */}
+      <div className="ml-8 text-right border-l pl-8 border-gray-200 dark:border-gray-700">
+        <div className="text-3xl font-bold text-brand-purple">${result.price}</div>
+        <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          per night
+        </div>
+        <Button
+          size="lg"
+          variant="default"
+          className="w-full bg-brand-purple hover:bg-brand-purple-dark"
+          onClick={() => onBookNow(result.provider, result.price, result)}
+        >
+          Book Now
+        </Button>
+      </div>
+    </div>
+
+    {isCheapest && (
+      <div className="mt-6 pt-4 border-t border-green-200 dark:border-green-800">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center text-green-700 dark:text-green-400">
+            <Star className="h-5 w-5 mr-2" />
+            <span className="font-medium">
+              Best price! Save ${Math.min(...allResults.filter(r => r !== result).map(r => r.price)) - result.price} compared to others
+            </span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <Badge variant="outline" className="text-xs bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+              Great Deal
+            </Badge>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+
+const FlightCard = ({
+  result,
   isCheapest,
   departureCity,
   destinationCity,
-  allResults
-}: { 
-  result: SearchResult; 
+  allResults,
+  onBookNow
+}: {
+  result: SearchResult;
   isCheapest: boolean;
   departureCity: string;
   destinationCity: string;
   allResults: SearchResult[];
+  onBookNow: (provider: string, price: number, result: SearchResult) => void;
 }) => (
-  <div className={`border rounded-lg p-6 transition-colors ${
-    isCheapest ? 'border-green-500 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-gray-700'
-  }`}>
+  <div className={`border rounded-lg p-6 transition-colors ${isCheapest ? 'border-green-500 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-gray-700'
+    }`}>
     <div className="flex justify-between items-start">
       <div className="flex-1">
         {/* Airline Info */}
         <div className="flex items-center space-x-4 mb-6">
-        <div className="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+          <div className="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
             <PlaneTakeoff className="w-8 h-8 text-gray-700 dark:text-gray-300" />
           </div>
           <div>
@@ -81,7 +183,7 @@ const FlightCard = ({
               <div className="font-bold text-xl">{result.departureTime}</div>
               <div className="text-sm text-gray-600 dark:text-gray-300">{departureCity}</div>
             </div>
-            
+
             <div className="flex-1 flex items-center justify-center">
               <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
               <div className="mx-4 flex flex-col items-center">
@@ -93,7 +195,7 @@ const FlightCard = ({
               </div>
               <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
             </div>
-            
+
             <div className="text-center flex-1">
               <div className="font-bold text-xl">{result.arrivalTime}</div>
               <div className="text-sm text-gray-600 dark:text-gray-300">{destinationCity}</div>
@@ -110,7 +212,7 @@ const FlightCard = ({
               <div className="font-medium">{result.aircraft}</div>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Luggage className="h-4 w-4 text-gray-400" />
             <div>
@@ -118,7 +220,7 @@ const FlightCard = ({
               <div className="font-medium">{result.baggageAllowance}</div>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Shield className="h-4 w-4 text-gray-400" />
             <div>
@@ -135,11 +237,11 @@ const FlightCard = ({
         <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
           {result.cabinClass}
         </div>
-        <Button 
-          size="lg" 
+        <Button
+          size="lg"
           variant="default"
           className="w-full bg-brand-purple hover:bg-brand-purple-dark"
-          onClick={() => handleBookNow(result.provider, result.price, result)}
+          onClick={() => onBookNow(result.provider, result.price, result)}
         >
           Book Now
         </Button>
@@ -175,14 +277,14 @@ const SearchBar = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("flights");
-  
+
   // Form states
   const [departureCity, setDepartureCity] = useState('');
   const [destinationCity, setDestinationCity] = useState('');
   const [departureDate, setDepartureDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
   const [travelers, setTravelers] = useState(1);
-  
+
   // Hotel specific states
   const [hotelLocation, setHotelLocation] = useState('');
   const [checkInDate, setCheckInDate] = useState('');
@@ -203,14 +305,14 @@ const SearchBar = () => {
 
   const getFilteredAndSortedResults = (results: SearchResult[]) => {
     let filtered = [...results];
-    
+
     // Apply stops filter
     if (filters.stops !== 'all') {
-      filtered = filtered.filter(result => 
+      filtered = filtered.filter(result =>
         filters.stops === 'nonstop' ? result.stops === 0 : result.stops === 1
       );
     }
-    
+
     // Apply sorting
     filtered.sort((a, b) => {
       const multiplier = filters.sortOrder === 'asc' ? 1 : -1;
@@ -225,13 +327,13 @@ const SearchBar = () => {
           return 0;
       }
     });
-    
+
     return filtered;
   };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (activeTab === 'flights') {
       if (!departureCity || !destinationCity || !departureDate) {
         toast({
@@ -241,9 +343,9 @@ const SearchBar = () => {
         });
         return;
       }
-      
+
       setIsSearching(true);
-      
+
       try {
         const flightData = await searchAmadeusFlights(
           departureCity,
@@ -252,11 +354,11 @@ const SearchBar = () => {
           travelers,
           returnDate || undefined
         );
-        
+
         const formattedResults = flightData.map(formatAmadeusFlightData);
         setSearchResults(formattedResults);
         setShowResults(true);
-        
+
         toast({
           title: "Flights found",
           description: `Found ${formattedResults.length} flight options.`,
@@ -271,7 +373,7 @@ const SearchBar = () => {
       } finally {
         setIsSearching(false);
       }
-      
+
     } else {
       if (!hotelLocation || !checkInDate || !checkOutDate) {
         toast({
@@ -281,9 +383,9 @@ const SearchBar = () => {
         });
         return;
       }
-      
+
       setIsSearching(true);
-      
+
       try {
         const hotelData = await searchAmadeusHotels(
           hotelLocation,
@@ -291,11 +393,11 @@ const SearchBar = () => {
           checkOutDate,
           guests
         );
-        
+
         const formattedResults = hotelData.map(formatAmadeusHotelData);
         setSearchResults(formattedResults);
         setShowResults(true);
-        
+
         toast({
           title: "Hotels found",
           description: `Found ${formattedResults.length} hotel options.`,
@@ -317,7 +419,7 @@ const SearchBar = () => {
     if (result.hotel?.website) {
       window.open(result.hotel.website, '_blank');
     }
-    
+
     toast({
       title: "Redirecting to provider",
       description: `Taking you to ${provider} to complete your booking for $${price}.`,
@@ -343,7 +445,7 @@ const SearchBar = () => {
           <TabsTrigger value="flights" className="text-base">Flights</TabsTrigger>
           <TabsTrigger value="hotels" className="text-base">Hotels</TabsTrigger>
         </TabsList>
-        
+
         <form onSubmit={handleSearch}>
           <TabsContent value="flights" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -351,64 +453,64 @@ const SearchBar = () => {
                 <label className="text-sm font-medium">From (Airport Code)</label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input 
-                    className="pl-10" 
-                    placeholder="e.g., NYC, LON" 
+                  <Input
+                    className="pl-10"
+                    placeholder="e.g., NYC, LON"
                     value={departureCity}
                     onChange={(e) => setDepartureCity(e.target.value)}
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">To (Airport Code)</label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input 
-                    className="pl-10" 
-                    placeholder="e.g., NYC, LON" 
+                  <Input
+                    className="pl-10"
+                    placeholder="e.g., NYC, LON"
                     value={destinationCity}
                     onChange={(e) => setDestinationCity(e.target.value)}
                   />
                 </div>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Departure</label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input 
-                    className="pl-10" 
-                    type="date" 
+                  <Input
+                    className="pl-10"
+                    type="date"
                     value={departureDate}
                     onChange={(e) => setDepartureDate(e.target.value)}
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Return (Optional)</label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input 
-                    className="pl-10" 
-                    type="date" 
+                  <Input
+                    className="pl-10"
+                    type="date"
                     value={returnDate}
                     onChange={(e) => setReturnDate(e.target.value)}
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Travelers</label>
                 <div className="relative">
                   <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input 
-                    className="pl-10" 
-                    type="number" 
-                    min="1" 
+                  <Input
+                    className="pl-10"
+                    type="number"
+                    min="1"
                     value={travelers}
                     onChange={(e) => setTravelers(parseInt(e.target.value))}
                   />
@@ -416,43 +518,43 @@ const SearchBar = () => {
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="hotels" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">City Code</label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input 
-                    className="pl-10" 
-                    placeholder="e.g., NYC, LON" 
+                  <Input
+                    className="pl-10"
+                    placeholder="e.g., NYC, LON"
                     value={hotelLocation}
                     onChange={(e) => setHotelLocation(e.target.value)}
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Check-in</label>
                   <div className="relative">
                     <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input 
-                      className="pl-10" 
-                      type="date" 
+                    <Input
+                      className="pl-10"
+                      type="date"
                       value={checkInDate}
                       onChange={(e) => setCheckInDate(e.target.value)}
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Check-out</label>
                   <div className="relative">
                     <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input 
-                      className="pl-10" 
-                      type="date" 
+                    <Input
+                      className="pl-10"
+                      type="date"
                       value={checkOutDate}
                       onChange={(e) => setCheckOutDate(e.target.value)}
                     />
@@ -460,32 +562,32 @@ const SearchBar = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Rooms</label>
-                <Input 
-                  type="number" 
-                  min="1" 
+                <Input
+                  type="number"
+                  min="1"
                   value={rooms}
                   onChange={(e) => setRooms(parseInt(e.target.value))}
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Guests</label>
-                <Input 
-                  type="number" 
-                  min="1" 
+                <Input
+                  type="number"
+                  min="1"
                   value={guests}
                   onChange={(e) => setGuests(parseInt(e.target.value))}
                 />
               </div>
             </div>
           </TabsContent>
-          
+
           <div className="mt-6 flex items-center">
-            <Button 
+            <Button
               type="submit"
               className="w-full bg-brand-purple hover:bg-brand-purple-dark text-white"
               disabled={isSearching}
@@ -571,7 +673,7 @@ const SearchBar = () => {
           <div className="overflow-y-auto flex-1 pr-2 space-y-4">
             {searchResults.length === 0 ? (
               <p className="text-center text-gray-500 dark:text-gray-400">No results found. Try different search criteria.</p>
-            ) : (
+            ) : activeTab === 'flights' ? (
               getFilteredAndSortedResults(searchResults).map((result, index) => (
                 <FlightCard
                   key={index}
@@ -580,6 +682,17 @@ const SearchBar = () => {
                   departureCity={departureCity}
                   destinationCity={destinationCity}
                   allResults={searchResults}
+                  onBookNow={handleBookNow}
+                />
+              ))
+            ) : (
+              searchResults.map((result, index) => (
+                <HotelCard
+                  key={index}
+                  result={result}
+                  isCheapest={cheapestOption === result}
+                  allResults={searchResults}
+                  onBookNow={handleBookNow}
                 />
               ))
             )}
